@@ -1,3 +1,6 @@
 [submodule "embed"]
 	path = embed
 	url = https://github.com/serge-balakshiy/embed.git
+[submodule "libforth"]
+	path = libforth
+	url = https://github.com/serge-balakshiy/libforth.git
