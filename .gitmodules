@@ -7,3 +7,6 @@
 [submodule "cxxforth"]
 	path = cxxforth
 	url = https://github.com/serge-balakshiy/cxxforth.git
+[submodule "Atlast"]
+	path = Atlast
+	url = https://github.com/serge-balakshiy/Atlast.git
