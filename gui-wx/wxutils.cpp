@@ -580,10 +580,18 @@ bool IsScriptFile(const wxString& filename)
     wxString ext = filename.AfterLast('.');
     // if filename has no extension then ext == filename
     if (ext == filename) return false;
-    // Golly supports Lua and Python scripts
+    // Golly supports Lua and Python scripts and Gforth, Atlast, Embed, Libforth, 
+    // CxxForth, zForth
     // (with optional support for Perl if ENABLE_PERL is defined)
     return ( ext.IsSameAs(wxT("lua"),false) ||
              ext.IsSameAs(wxT("py"),false) ||
+             ext.IsSameAs(wxT("ip1"),false) ||
+             ext.IsSameAs(wxT("fs"),false) ||
+             ext.IsSameAs(wxT("cxxfs"),false) ||
+             ext.IsSameAs(wxT("lfs"),false) ||
+             ext.IsSameAs(wxT("efs"),false) ||
+             ext.IsSameAs(wxT("atl"),false) ||
+             ext.IsSameAs(wxT("zfs"),false) ||
              ext.IsSameAs(wxT("pl"),false) );
 }
 
