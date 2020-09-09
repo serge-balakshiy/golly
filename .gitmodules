@@ -4,3 +4,6 @@
 [submodule "libforth"]
 	path = libforth
 	url = https://github.com/serge-balakshiy/libforth.git
+[submodule "cxxforth"]
+	path = cxxforth
+	url = https://github.com/serge-balakshiy/cxxforth.git
