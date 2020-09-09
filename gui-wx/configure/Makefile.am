@@ -1,17 +1,19 @@
 ACLOCAL_AMFLAGS = -I m4
 AM_CPPFLAGS = -I$(top_srcdir)/../../gollybase/
 AM_CXXFLAGS = -DGOLLYDIR="$(GOLLYDIR)" -Wall -fno-strict-aliasing
-AM_LDFLAGS = -Wl,--as-needed
+AM_LDFLAGS = -Wl,--as-needed -rdynamic
 
 if MAC
 liblua_a_CPPFLAGS = -DLUA_USE_MACOSX
 endif
 
+AUTOMAKE_OPTIONS = subdir-objects
+
 if LINUX
 liblua_a_CPPFLAGS = -DLUA_USE_LINUX
 libatlast_a_CPPFLAGS = -DMEMSTAT -DEXPORT -DREADONLYSTRINGS
 liblibforth_a_CPPFLAGS = 
-libembed_a_CPPFLAGS = _DNDEBUG -std=c99
+libembed_a_CPPFLAGS = -DNDEBUG -std=c99
 endif
 
 bin_PROGRAMS = golly bgolly
@@ -29,11 +31,15 @@ golly_CPPFLAGS = $(AM_CPPFLAGS) $(WX_CPPFLAGS) $(PYTHON_INCLUDE) \
 	$(libatlast_a_CPPFLAGS) \
 	$(liblibforth_a_CPPFLAGS) \
 	$(libembed_a_CPPFLAGS) \
+	-I$(top_srcdir)/../../lua \
 	-I$(top_srcdir)/../../Atlast \
 	-I$(top_srcdir)/../../embed \
 	-I$(top_srcdir)/../../libforth \
-	-I$(top_srcdir)/../../zforth \
-	-I$(top_srcdir)/../../lua
+	-I$(top_srcdir)/../../zForth \
+	-I$(top_srcdir)/../../zForth/src/zforth \
+	-I$(top_srcdir)/../../zForth/src/linux
+
+
 golly_CXXFLAGS = $(AM_CXXFLAGS) $(WX_CXXFLAGS_ONLY)
 golly_LDADD = $(WX_LIBS) libgolly.a liblua.a libatlast.a libembed.a liblibforth.a $(LDLIBS)
 

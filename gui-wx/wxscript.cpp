@@ -30,7 +30,9 @@
 #include "wxcxxforth.h"         // for RunCxxForthScript, AbortCxxForthScript
 #include "wxembed.h"         // for RunEmbedScript, AbortEmbedScript
 #include "wxgforth.h"         // for RunGforthScript, AbortGforthScript
+#include "wxip1.h"         // for RunIP1Script, AbortIP1Script
 #include "wxlibforth.h"         // for RunLibForthScript, AbortLibForthScript
+#include "wxzforth.h"         // for RunZForthScript, AbortZForthScript
 #include "wxoverlay.h"     // for curroverlay
 #include "wxscript.h"
 
@@ -1643,7 +1645,7 @@ void RunScript(const wxString& filename)
         RunPerlScript(fpath);
     } else if (ext.IsSameAs(wxT("py"), false)) {
         pyscript = true;
-        RunPythonScript(fpath);
+//        RunPythonScript(fpath);
     } else if (ext.IsSameAs(wxT("atl"), false)) {
         atlastscript = true;
         RunAtlastScript(fpath);
@@ -1664,7 +1666,7 @@ void RunScript(const wxString& filename)
         RunLibForthScript(fpath);
     } else if (ext.IsSameAs(wxT("zfs"), false)) {
         zforthscript = true;
-        RunzForthScript(fpath);
+        RunZForthScript(fpath);
     } else {
         // should never happen
         luascript = false;
@@ -1693,14 +1695,14 @@ void RunScript(const wxString& filename)
                 AbortLuaScript();
             } else if (in_pyscript) {
                 // abort the calling Python script
-                AbortPythonScript();
+//                AbortPythonScript();
             } else if (in_plscript) {
                 // abort the calling Perl script
                 AbortPerlScript();
             } else if (in_atlastscript) {
                 // abort the calling Atlast script
                 AbortAtlastScript();
-            } else if (in_cxxforthtscript) {
+            } else if (in_cxxforthscript) {
                 // abort the calling CxxForth script
                 AbortCxxForthScript();
             } else if (in_embedscript) {
@@ -1717,7 +1719,7 @@ void RunScript(const wxString& filename)
                 AbortLibForthScript();
             } else if (in_zforthscript) {
                 // abort the calling zForth script
-                AbortzForthScript();
+                AbortZForthScript();
             }
         }
         
@@ -1950,14 +1952,14 @@ void PassKeyToScript(int key, int modifiers)
         view_painted = true;    // ensure Yield loop terminates
         if (luascript) AbortLuaScript();
         if (plscript) AbortPerlScript();
-        if (pyscript) AbortPythonScript();
+//        if (pyscript) AbortPythonScript();
         if (atlastscript) AbortAtlastScript();
         if (cxxforthscript) AbortCxxForthScript();
         if (embedscript) AbortEmbedScript();
         if (gforthscript) AbortGforthScript();
         if (ip1script) AbortIP1Script();
         if (libforthscript) AbortLibForthScript();
-        if (zforthscript) AbortzForthScript();
+        if (zforthscript) AbortZForthScript();
     } else {
         // build a string like "key x altshift" and add to event queue
         // for possible consumption by GSF_getevent
@@ -2057,26 +2059,26 @@ void FinishScripting()
         view_painted = true;    // ensure Yield loop terminates
         if (luascript) AbortLuaScript();
         if (plscript) AbortPerlScript();
-        if (pyscript) AbortPythonScript();
+//        if (pyscript) AbortPythonScript();
         if (atlastscript) AbortAtlastScript();
         if (embedscript) AbortEmbedScript();
         if (cxxforthscript) AbortCxxForthScript();
         if (gforthscript) AbortGforthScript();
         if (ip1script) AbortIP1Script();
         if (libforthscript) AbortLibForthScript();
-        if (zforthscript) AbortzForthScript();
+        if (zforthscript) AbortZForthScript();
         wxSetWorkingDirectory(gollydir);
         inscript = false;
     }
     
     FinishLuaScripting();
     FinishPerlScripting();
-    FinishPythonScripting();
+//    FinishPythonScripting();
     FinishAtlastScripting();
     FinishCxxForthScripting();
     FinishEmbedScripting();
     FinishGforthScripting();
     FinishIP1Scripting();
     FinishLibForthScripting();
-    FinishzForthScripting();
+    FinishZForthScripting();
 }
