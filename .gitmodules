@@ -1,3 +1,6 @@
+[submodule "zForth"]
+	path = zForth
+	url = https://github.com/serge-balakshiy/zForth.git
 [submodule "embed"]
 	path = embed
 	url = https://github.com/serge-balakshiy/embed.git
