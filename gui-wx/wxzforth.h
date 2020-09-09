@@ -4,13 +4,13 @@
 #ifndef _WXZFORTH_H_
 #define _WXZFORTH_H_
 
-void RunZForthScript(const wxString& filepath);
+void RunzForthScript(const wxString& filepath);
 // Run the given .lua file.
 
-void AbortZForthScript();
+void AbortzForthScript();
 // Abort the currently running ZForth script.
 
-void FinishZForthScripting();
+void FinishzForthScripting();
 // Called when app is quitting.
 
 #endif

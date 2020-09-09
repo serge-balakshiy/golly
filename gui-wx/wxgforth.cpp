@@ -170,7 +170,7 @@ void gf_open(void){
 
 // Run the given .fs file.
 // Доработать этот 
-void RunGForthScript(const wxString& filepath){
+void RunGforthScript(const wxString& filepath){
 char *my_env[] = {"my env"};
 cout << "RunGForthScript: ";
 gf_open();
@@ -221,12 +221,12 @@ argc0++;
  } //end: void RunGForthScript
 
 // Abort the currently running Forth script.
-void AbortGForthScript(){
+void AbortGforthScript(){
   scripterr = wxString(abortmsg,wxConvLocal);
 }
 
 // Called when app is quitting.
-void FinishGForthScripting(){
+void FinishGforthScripting(){
   printf("gforth finish \n");
 }
 

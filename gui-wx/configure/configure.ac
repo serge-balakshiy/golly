@@ -98,6 +98,10 @@ AC_SEARCH_LIBS([dlopen], [dl], , [AC_MSG_ERROR([missing dlopen])])
 # Find library to link for OpenGL (typically -lGL).
 AC_SEARCH_LIBS([glViewport], [GL], , [AC_MSG_ERROR([missing OpenGL])])
 
+# 09.09.20
+# Find library to link for gforth (typically -lgforth).
+AC_SEARCH_LIBS([dlopen], [gforth], , [AC_MSG_ERROR([missing GForth])])
+
 # Definitions used in the source:
 AC_DEFINE_UNQUOTED([VERSION], [$PACKAGE_VERSION])
 GOLLYDIR=${GOLLYDIR:-'${pkgdatadir}'}

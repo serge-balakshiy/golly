@@ -9,20 +9,33 @@ endif
 
 if LINUX
 liblua_a_CPPFLAGS = -DLUA_USE_LINUX
+libatlast_a_CPPFLAGS = -DMEMSTAT -DEXPORT -DREADONLYSTRINGS
+liblibforth_a_CPPFLAGS = 
+libembed_a_CPPFLAGS = _DNDEBUG -std=c99
 endif
 
 bin_PROGRAMS = golly bgolly
 noinst_PROGRAMS = RuleTableToTree
-noinst_LIBRARIES = libgolly.a liblua.a
+noinst_LIBRARIES = libgolly.a liblua.a libatlast.a liblibforth.a libembed.a 
 doc_DATA = ../../docs/License.html ../../docs/ReadMe.html
 
 include sources.am
 
+LDLIBS = -lreadline -lgforth -lm
+
 golly_CPPFLAGS = $(AM_CPPFLAGS) $(WX_CPPFLAGS) $(PYTHON_INCLUDE) \
 	$(PERL_CPPFLAGS) $(PERL_INCLUDE) \
-	$(liblua_a_CPPFLAGS) -I$(top_srcdir)/../../lua
+	$(liblua_a_CPPFLAGS) \
+	$(libatlast_a_CPPFLAGS) \
+	$(liblibforth_a_CPPFLAGS) \
+	$(libembed_a_CPPFLAGS) \
+	-I$(top_srcdir)/../../Atlast \
+	-I$(top_srcdir)/../../embed \
+	-I$(top_srcdir)/../../libforth \
+	-I$(top_srcdir)/../../zforth \
+	-I$(top_srcdir)/../../lua
 golly_CXXFLAGS = $(AM_CXXFLAGS) $(WX_CXXFLAGS_ONLY)
-golly_LDADD = $(WX_LIBS) libgolly.a liblua.a
+golly_LDADD = $(WX_LIBS) libgolly.a liblua.a libatlast.a libembed.a liblibforth.a $(LDLIBS)
 
 if WINDOWS
 golly_LDADD += gollyres.o

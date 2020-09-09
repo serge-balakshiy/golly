@@ -6,13 +6,13 @@
 
 //#include <gforth.h>
 
-void RunGForthScript(const wxString & filepath);
+void RunGforthScript(const wxString & filepath);
 // Run the given .fs file.
 
-void AbortGForthScript();
+void AbortGforthScript();
 // Abort the currently running Forth script.
 
-void FinishGForthScripting();
+void FinishGforthScripting();
 // Called when app is quitting.
 
 #endif //  _WXGFORTH_H_

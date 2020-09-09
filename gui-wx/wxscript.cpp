@@ -26,6 +26,11 @@
 #include "wxlua.h"         // for RunLuaScript, AbortLuaScript
 #include "wxperl.h"        // for RunPerlScript, AbortPerlScript
 #include "wxpython.h"      // for RunPythonScript, AbortPythonScript
+#include "wxatlast.h"         // for RunAtlastScript, AbortAtlastScript
+#include "wxcxxforth.h"         // for RunCxxForthScript, AbortCxxForthScript
+#include "wxembed.h"         // for RunEmbedScript, AbortEmbedScript
+#include "wxgforth.h"         // for RunGforthScript, AbortGforthScript
+#include "wxlibforth.h"         // for RunLibForthScript, AbortLibForthScript
 #include "wxoverlay.h"     // for curroverlay
 #include "wxscript.h"
 
@@ -41,7 +46,7 @@ bool stop_after_script;    // stop generating pattern after running script?
 bool autoupdate;           // update display after each change to current universe?
 bool allowcheck;           // allow event checking?
 bool showprogress;         // script can display the progress dialog?
-wxString scripterr;        // Lua/Perl/Python error message
+wxString scripterr;        // Lua/Perl/Python/*Forth error message
 wxString mousepos;         // current mouse position
 wxString scripttitle;      // window title set by settitle command
 wxString rle3path;         // path of .rle3 file to be sent to 3D.lua via GSF_getevent
@@ -50,6 +55,13 @@ wxString rle3path;         // path of .rle3 file to be sent to 3D.lua via GSF_ge
 static bool luascript = false;      // a Lua script is running?
 static bool plscript = false;       // a Perl script is running?
 static bool pyscript = false;       // a Python script is running?
+static bool atlastscript = false;      // a Atlast script is running?
+static bool embedscript = false;      // a Embed script is running?
+static bool cxxforthscript = false;      // a CxxForth script is running?
+static bool gforthscript = false;      // a Gforth script is running?
+static bool ip1script = false;      // a IP1 script is running?
+static bool libforthscript = false;      // a LibForth script is running?
+static bool zforthscript = false;      // a zForth script is running?
 static bool showtitle;              // need to update window title?
 static bool updateedit;             // need to update edit bar?
 static bool exitcalled;             // GSF_exit was called?
@@ -1463,6 +1475,20 @@ void CheckScriptError(const wxString& ext)
         } else if (ext.IsSameAs(wxT("pl"), false)) {
             errtype = _("Perl error:");
             scripterr.Replace(wxT(". at "), wxT("\nat "));
+        } else if (ext.IsSameAs(wxT("atl"), false)) {
+            errtype = _("Atlast error:");
+        } else if (ext.IsSameAs(wxT("cxxfs"), false)) {
+            errtype = _("CxxForth error:");
+        } else if (ext.IsSameAs(wxT("emb"), false)) {
+            errtype = _("Embed error:");
+        } else if (ext.IsSameAs(wxT("fs"), false)) {
+            errtype = _("Gforth error:");
+        } else if (ext.IsSameAs(wxT("lfs"), false)) {
+            errtype = _("LibForth error:");
+        } else if (ext.IsSameAs(wxT("ip1"), false)) {
+            errtype = _("IP1 error:");
+        } else if (ext.IsSameAs(wxT("zfs"), false)) {
+            errtype = _("zForth error:");
         } else {
             errtype = _("Python error:");
             scripterr.Replace(wxT("  File \"<string>\", line 1, in ?\n"), wxT(""));
@@ -1530,6 +1556,13 @@ void RunScript(const wxString& filename)
     bool in_luascript = luascript;
     bool in_plscript = plscript;
     bool in_pyscript = pyscript;
+    bool in_atlastscript = atlastscript;
+    bool in_embedscript = embedscript;
+    bool in_cxxforthscript = cxxforthscript;
+    bool in_gforthscript = gforthscript;
+    bool in_ip1script = ip1script;
+    bool in_libforthscript = libforthscript;
+    bool in_zforthscript = zforthscript;
     wxString savecwd;
     
     if (!wxFileName::FileExists(filename)) {
@@ -1611,11 +1644,39 @@ void RunScript(const wxString& filename)
     } else if (ext.IsSameAs(wxT("py"), false)) {
         pyscript = true;
         RunPythonScript(fpath);
+    } else if (ext.IsSameAs(wxT("atl"), false)) {
+        atlastscript = true;
+        RunAtlastScript(fpath);
+    } else if (ext.IsSameAs(wxT("cxxfs"), false)) {
+        cxxforthscript = true;
+        RunCxxForthScript(fpath);
+    } else if (ext.IsSameAs(wxT("efs"), false)) {
+        embedscript = true;
+        RunEmbedScript(fpath);
+    } else if (ext.IsSameAs(wxT("fs"), false)) {
+        gforthscript = true;
+        RunGforthScript(fpath);
+    } else if (ext.IsSameAs(wxT("ip1"), false)) {
+        ip1script = true;
+        RunIP1Script(fpath);
+    } else if (ext.IsSameAs(wxT("lfs"), false)) {
+        libforthscript = true;
+        RunLibForthScript(fpath);
+    } else if (ext.IsSameAs(wxT("zfs"), false)) {
+        zforthscript = true;
+        RunzForthScript(fpath);
     } else {
         // should never happen
         luascript = false;
         plscript = false;
         pyscript = false;
+        atlastscript = false;
+        embedscript = false;
+        cxxforthscript = false;
+        gforthscript = false;
+        ip1script = false;
+        libforthscript = false;
+        zforthscript = false;
         Warning(_("Unexpected extension in script file:\n") + filename);
     }
     
@@ -1636,12 +1697,40 @@ void RunScript(const wxString& filename)
             } else if (in_plscript) {
                 // abort the calling Perl script
                 AbortPerlScript();
+            } else if (in_atlastscript) {
+                // abort the calling Atlast script
+                AbortAtlastScript();
+            } else if (in_cxxforthtscript) {
+                // abort the calling CxxForth script
+                AbortCxxForthScript();
+            } else if (in_embedscript) {
+                // abort the calling Embed script
+                AbortEmbedScript();
+            } else if (in_gforthscript) {
+                // abort the calling Gforth script
+                AbortGforthScript();
+            } else if (in_ip1script) {
+                // abort the calling IP1 script
+                AbortIP1Script();
+            } else if (in_libforthscript) {
+                // abort the calling LibForth script
+                AbortLibForthScript();
+            } else if (in_zforthscript) {
+                // abort the calling zForth script
+                AbortzForthScript();
             }
         }
         
         luascript = in_luascript;
         plscript = in_plscript;
         pyscript = in_pyscript;
+        atlastscript = in_atlastscript;
+        embedscript = in_embedscript;
+        cxxforthscript = in_cxxforthscript;
+        gforthscript = in_gforthscript;
+        ip1script = in_ip1script;
+        libforthscript = in_libforthscript;
+        zforthscript = in_zforthscript;
         
     } else {
         // already_inscript is false
@@ -1690,6 +1779,13 @@ void RunScript(const wxString& filename)
         luascript = false;
         plscript = false;
         pyscript = false;
+        atlastscript = false;
+        cxxforthscript = false;
+        embedscript = false;
+        gforthscript = false;
+        ip1script = false;
+        libforthscript = false;
+        zforthscript = false;
         
         // update Undo/Redo items based on current layer's history
         if (allowundo) currlayer->undoredo->UpdateUndoRedoItems();
@@ -1855,6 +1951,13 @@ void PassKeyToScript(int key, int modifiers)
         if (luascript) AbortLuaScript();
         if (plscript) AbortPerlScript();
         if (pyscript) AbortPythonScript();
+        if (atlastscript) AbortAtlastScript();
+        if (cxxforthscript) AbortCxxForthScript();
+        if (embedscript) AbortEmbedScript();
+        if (gforthscript) AbortGforthScript();
+        if (ip1script) AbortIP1Script();
+        if (libforthscript) AbortLibForthScript();
+        if (zforthscript) AbortzForthScript();
     } else {
         // build a string like "key x altshift" and add to event queue
         // for possible consumption by GSF_getevent
@@ -1955,6 +2058,13 @@ void FinishScripting()
         if (luascript) AbortLuaScript();
         if (plscript) AbortPerlScript();
         if (pyscript) AbortPythonScript();
+        if (atlastscript) AbortAtlastScript();
+        if (embedscript) AbortEmbedScript();
+        if (cxxforthscript) AbortCxxForthScript();
+        if (gforthscript) AbortGforthScript();
+        if (ip1script) AbortIP1Script();
+        if (libforthscript) AbortLibForthScript();
+        if (zforthscript) AbortzForthScript();
         wxSetWorkingDirectory(gollydir);
         inscript = false;
     }
@@ -1962,4 +2072,11 @@ void FinishScripting()
     FinishLuaScripting();
     FinishPerlScripting();
     FinishPythonScripting();
+    FinishAtlastScripting();
+    FinishCxxForthScripting();
+    FinishEmbedScripting();
+    FinishGforthScripting();
+    FinishIP1Scripting();
+    FinishLibForthScripting();
+    FinishzForthScripting();
 }
