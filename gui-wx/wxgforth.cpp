@@ -119,7 +119,7 @@ void gf_open(void){
 #include "wxscript.h"      // for inscript, abortmsg, GSF_*, etc
 #include "wxgforth.h"
 //#include "wxgforth1.h" // for gf_open()
-#include <gforth.h>
+
 // =============================================================================
 
 // #ifdef ENABLE_GFORTH
@@ -128,11 +128,6 @@ void gf_open(void){
     Golly uses an embedded GForth interpreter to execute scripts.
 
 */
-
-// #define HAS_BACKLINK 1
-// #include <EXTERN.h>
-// #include <gforth.h>
-// #include <XSUB.h>
 
 
 // restore wxWidgets definition for _ (from include/wx/intl.h)

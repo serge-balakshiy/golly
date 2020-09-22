@@ -271,7 +271,6 @@ static void embCheckEvents()
 {
     // this routine is called at the start of every g_* function so we can
     // detect user events (eg. hitting the stop button or escape key)
-
     if (allowcheck) wxGetApp().Poller()->checkevents();
     
     if (insideYield) return;
@@ -281,8 +280,8 @@ static void embCheckEvents()
         // AbortLuaScript was called
 	    cout << "embed: checkexents error" << endl;
 	    return;
-
     }
+    return;
 }
 
 
@@ -296,12 +295,15 @@ static int cb_privet(vm_extension_t * const v){
 //	return eclr(v);
 
   emb_push(v, 42);
-return eclr(v);
+  return eclr(v);
 }
 
 static int cb_emb_update(vm_extension_t * const v){
   embCheckEvents();
+  if(eget(v))
+    return eclr(v);
   GSF_update();
+  return eclr(v);
 }
 
 
@@ -315,9 +317,7 @@ static int cb_rotate(vm_extension_t * const v){
     //push(0);
   }else{
     return eclr(v);
-
   }
-
 }
 
 static int cb_emb_getcell(vm_extension_t * const v){
