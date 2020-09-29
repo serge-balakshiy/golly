@@ -40,6 +40,15 @@ using namespace std;
 #include "wxargs.h"
 #include "embed.h"
 #include "embed_util.h"
+#include <errno.h>
+#include <stdbool.h>
+#include <assert.h>
+#include <string.h>
+#include <stdlib.h>
+#include <math.h>
+#include <ctype.h>
+#include <stdio.h>
+
 
 #define embed_fatal(...)   do { } while(0) //embed_die()
 #define embed_error(...)   do { } while(0)
@@ -73,10 +82,11 @@ struct vm_extension_t {
 	X("rotate",       cb_rotate,  true)\
 	X("update",       cb_emb_update,  true)\
 	X("getcell", cb_emb_getcell, true)\
+	X("setcell", cb_emb_setcell, true)\
 	X("s>f",      cb_s2f,        true)\
 
 #define X(NAME, FUNCTION, USE) static int FUNCTION ( vm_extension_t * const v );
-CALLBACK_XMACRO
+  CALLBACK_XMACRO
 #undef X
 
 static callbacks_t callbacks[] = {
@@ -95,14 +105,14 @@ static inline cell_t eset(vm_extension_t * const v, const cell_t error)
         return v->error;
 }
 
-static inline cell_t eget(vm_extension_t const * const v) { /**< get cur
-rent error register */
+static inline cell_t eget(vm_extension_t const * const v) 
+{ /**< get current error register */
         assert(v);
         return v->error;
 }
 
-static inline cell_t eclr(vm_extension_t * const v) { /**< clear error r
-egister and return value before clear */
+static inline cell_t eclr(vm_extension_t * const v) 
+{ /**< clear error register and return value before clear */
         assert(v);
         const cell_t error = v->error;
         v->error = 0;
@@ -126,7 +136,7 @@ char buf[128] = { 0 };
         if(eget(v)) { 
 	snprintf(buf, sizeof(buf)-1, "emb_push: error");
                 return;
-}
+	}
         int e = 0;
         if((e = embed_push(v->h, value)) < 0)
                 eset(v, e);
@@ -320,13 +330,13 @@ static int cb_rotate(vm_extension_t * const v){
   }
 }
 
-static int cb_emb_getcell(vm_extension_t * const v){
+static int cb_emb_getcell(vm_extension_t * const v){ // ( x y -- n = state )
   embCheckEvents();
-  cell_t x=0;
-  cell_t y=0;
-  int e = embed_pop(v->h, &y);
-// printf("cb_emb_getcell: y=%d, e=%d, ", y, e);
-  e = embed_pop(v->h, &x);
+  cell_t y=emb_pop(v);
+  cell_t x=emb_pop(v);
+//  int e = embed_pop(v->h, &e);
+  printf("cb_emb_getcell: x=%d, y=%d, ", x, y);
+//  e = embed_pop(v->h, &x);
   const char* err = GSF_checkpos(currlayer->algo, x, y);
   if (err){ 
     return eclr(v);
@@ -334,6 +344,23 @@ static int cb_emb_getcell(vm_extension_t * const v){
     embed_push(v->h, currlayer->algo->getcell(x, y));
   }
 return eclr(v);
+}
+
+static int cb_emb_setcell(vm_extension_t * const v){ // ( x y state -- - )
+  embCheckEvents();
+  cell_t e = emb_pop(v); 
+  cell_t y=emb_pop(v); 
+  cell_t x=emb_pop(v); 
+
+//  printf("cb_emb_setcell: x=%d, y=%d, e=%d, ", x, y, e);
+
+  const char* err = GSF_setcell(x, y, e ); 
+  if (err){ 
+    eset(v, -1);
+//    return eclr(v);
+  }
+// embed_push(v->h, e);
+  return eclr(v);
 }
 
 static int cb_show(vm_extension_t * const v){
@@ -348,15 +375,15 @@ static int cb_show(vm_extension_t * const v){
 
 void RunEmbedScript(const wxString& filepath){
   char t[132];
-char **ArgAddPtr (char **pp, int size, char *str);
-
-int argc0 = 0;
-char **argv0 = 0;
-char* pchr = (const_cast<char*>((const char*)filepath.mb_str()));
-argv0 = ArgAddPtr( argv0, argc0, "embed");
-argc0++;
-argv0 = ArgAddPtr( argv0, argc0, pchr);
-argc0++;
+  char **ArgAddPtr (char **pp, int size, char *str);
+  
+  int argc0 = 0;
+  char **argv0 = 0;
+  char* pchr = (const_cast<char*>((const char*)filepath.mb_str()));
+  argv0 = ArgAddPtr( argv0, argc0, "embed");
+  argc0++;
+  argv0 = ArgAddPtr( argv0, argc0, pchr);
+  argc0++;
 
   BUILD_BUG_ON(sizeof(double_cell_t) != sizeof(sdc_t));
   vm_extension_t *v = vm_extension_new();

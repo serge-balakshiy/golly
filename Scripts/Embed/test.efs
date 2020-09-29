@@ -3,5 +3,11 @@ show
 2 3 + .
 2 3 getcell .
 .s
-.
+2 3 1 .s setcell
+.s
+2 3 getcell .s
+2 3 0 setcell
+2 3 1 .s setcell
+.s
+update
 
