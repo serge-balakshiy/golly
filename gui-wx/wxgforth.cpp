@@ -74,21 +74,6 @@ char **InsPtr (char **pp, int size, int ncell, char *str)
 
 #include <stdio.h>
 #include <gforth.h>
-double myfadd(double x, double y){
-  double z=x+y;
-  printf("Sum: %f=%f+%f\n", z, x, y);
-  return z;
-}
-int iadd(int x, int y){
-  int z=x+y;
- printf("Sum: %i=%i+%i\n", z, x, y);
- return z;
-}
-void gf_open(void){
-  printf("hello from Golly");
-}
-
-
 
 #include "wx/wxprec.h"     // for compilers that support precompilation
 #ifndef WX_PRECOMP
@@ -165,10 +150,31 @@ void gf_open(void){
 
 // Run the given .fs file.
 // Доработать этот 
+
+extern "C" int iadd(int x, int y){
+  int z=x+y;
+ printf("Sum: %i=%i+%i\n", z, x, y);
+ return z;
+}
+
+extern "C" void gf_show(){
+  inscript = false;
+  statusptr->DisplayMessage(wxString("Privet From Golly")); //, ATL_ENC));
+  inscript = true;
+  if (!showstatus) mainptr->ToggleStatusBar();
+
+}
+
+extern "C" void gf_hello(void){
+  printf("hello from Golly");
+}
+
+
+
 void RunGforthScript(const wxString& filepath){
 char *my_env[] = {"my env"};
 cout << "RunGForthScript: ";
-gf_open();
+gf_hello();
 
 static char *ens[] = {NULL}, **env = &ens[0];
 wxPuts (wxT ( "RunGForthScript: A wxWidgets c o n s o l e a p p l i c a t i o n " ) ) ;
