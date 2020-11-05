@@ -382,8 +382,17 @@ void RunEmbedScript(const wxString& filepath){
   char* pchr = (const_cast<char*>((const char*)filepath.mb_str()));
   argv0 = ArgAddPtr( argv0, argc0, "embed");
   argc0++;
+  printf("argc0=%d\n", argc0);
+//  argv0 = ArgAddPtr( argv0, argc0, "-i");
+//  argc0++;
+  argv0 = ArgAddPtr( argv0, argc0, "/home/serge/projects/gh/golly/Scripts/Embed/embed.blk");
+  argc0++;
   argv0 = ArgAddPtr( argv0, argc0, pchr);
   argc0++;
+
+  for ( int i=0; i < argc0; i++){
+    printf( "i=%d, %s\n", i, argv0[i]);
+  }
 
   BUILD_BUG_ON(sizeof(double_cell_t) != sizeof(sdc_t));
   vm_extension_t *v = vm_extension_new();
@@ -395,26 +404,73 @@ void RunEmbedScript(const wxString& filepath){
 //embed_new есть уже в vm_extension_new
   int res = 0;
 
+
 //  embed_opt_t o = embed_opt_default_hosted();
 //  embed_opt_set(v->h, &o);
 //o.read = mmu_read_cb;
-
-  if(argc0 > 1){
-//    o.options |= (const_cast<embed_vm_option_e*>((int)EMBED_VM_QUITE_ON));
-    for(int i =1; i < argc0; i++){
-      FILE *in = embed_fopen_or_die(argv0[i], "rb");
-      v->o.in = in;
-      embed_opt_set(v->h, &v->o);
-      res = embed_vm(v->h); // vm_extension_run
-      fclose(in);
-      v->o.in = stdin;
-      embed_opt_set(v->h, &v->o);
-      if(res<0) 
-	printf("error\n"); // res;
+// Этот кусок кода для запуска эмбед взят из mmu.c
+FILE *in;
+  if(argc0 > 3){
+    //    o.options |= (const_cast<embed_vm_option_e*>((int)EMBED_VM_QUITE_ON));
+    if (embed_load( v->h, argv0[1]) < 0 ){
+      printf("embed load: error %s\n", argv0[1]);
+      embed_die( );
     }
+
+    in = embed_fopen_or_die(argv0[2], "rb");
+    v->o.in = in;
+    embed_opt_set(v->h, &v->o);
+    res = embed_vm(v->h); // vm_extension_run(v)
+    fclose(in);
+    v->o.in = stdin;
+    embed_opt_set(v->h, &v->o);
+    if(res<0) printf("error\n"); // res;
   }else{
+
+//    if (embed_load( v->h, argv0[1]) < 0 ){
+//      printf("embed load: error %s\n", argv0[1]);
+//      embed_die( );
+//    }
+
+// Следующее должно грузить файл *.blk но прводит к тому,
+// что потом не выполняется файл скрипта.
+// Поэтому сейчас отключено.
+// Хотя возможность грузить файл типа blk пригодилась бы.
+// Возможно это поведение как-то связано с работой embed_opt... 
+//    if (embed_load( v->h, argv0[1]) < 0 ){
+//      printf("embed load: error %s\n", argv0[1]);
+//      embed_die( );
+//    }
+
+const char* script_path = GSF_getpath();
+printf( "get path: %s\n", script_path);
+
+    embed_reset(v->h);
+    in = embed_fopen_or_die(argv0[2], "rb");
+    v->o.in = in; // эта строка 
+// и следующая строка оказадась необходимой, 
+    embed_opt_set(v->h, &v->o);
+// чтобы выполнть загруженный файл
     res = embed_vm(v->h);
+
   }
+
+
+//    if ()
+//    for(int i =1; i < argc0; i++){
+//      FILE *in = embed_fopen_or_die(argv0[i], "rb");
+//      v->o.in = in;
+//      embed_opt_set(v->h, &v->o);
+//      res = embed_vm(v->h); // vm_extension_run
+//      fclose(in);
+//      v->o.in = stdin;
+//      embed_opt_set(v->h, &v->o);
+//      if(res<0) 
+//	printf("error\n"); // res;
+//    }
+//  }else{
+//    res = embed_vm(v->h);
+//  }
 
   vm_extension_free(v);
 }
