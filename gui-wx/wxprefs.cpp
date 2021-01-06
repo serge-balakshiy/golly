@@ -4337,9 +4337,9 @@ void PrefsDialog::OnButton(wxCommandEvent& event)
         wxString filetypes = _("All files (*)|*");
         filetypes +=         _("|Pattern (*.rle;*.mc;*.lif)|*.rle;*.mc;*.lif");
 #ifdef ENABLE_PERL
-        filetypes +=         _("|Script (*.lua;*.pl;*.py;*.fs;*.cxxfs;*.lfs;*.zfs;*.atl;*.efs;*.ip1)|*.lua;*.pl;*.py;*.fs;*.cxxfs;*.lfs;*.zfs;*.atl;*.efs;*.ip1");
+        filetypes +=         _("|Script (*.lua;*.pl;*.py;*.fs;*.cxxfs;*.lfs;*.zfs;*.atl;*.efs;*.kfs;*.ip1)|*.lua;*.pl;*.py;*.fs;*.cxxfs;*.lfs;*.kfs;*.zfs;*.atl;*.efs;*.ip1");
 #else
-        filetypes +=         _("|Script (*.lua;*.py;*.fs;*.cxxfs;*.lfs;*.zfs;*.atl;*.efs;*.ip1)|*.lua;*.py;*.fs;*.cxxfs;*.lfs;*.zfs;*.atl;*.efs;*.ip1");
+        filetypes +=         _("|Script (*.lua;*.py;*.fs;*.cxxfs;*.lfs;*.zfs;*.atl;*.efs;*.kfs;*.ip1)|*.lua;*.py;*.fs;*.cxxfs;*.lfs;*.zfs;*.atl;*.efs;*.kfs;*.ip1");
 #endif
         filetypes +=         _("|Rule (*.rule)|*.rule");
         filetypes +=         _("|HTML (*.html;*.htm)|*.html;*.htm");

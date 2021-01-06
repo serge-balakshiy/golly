@@ -591,6 +591,7 @@ bool IsScriptFile(const wxString& filename)
              ext.IsSameAs(wxT("lfs"),false) ||
              ext.IsSameAs(wxT("efs"),false) ||
              ext.IsSameAs(wxT("atl"),false) ||
+             ext.IsSameAs(wxT("kfs"),false) ||
              ext.IsSameAs(wxT("zfs"),false) ||
              ext.IsSameAs(wxT("pl"),false) );
 }

@@ -32,6 +32,7 @@
 #include "wxgforth.h"         // for RunGforthScript, AbortGforthScript
 #include "wxip1.h"         // for RunIP1Script, AbortIP1Script
 #include "wxlibforth.h"         // for RunLibForthScript, AbortLibForthScript
+#include "wxkforth64.h"         // for RunkForth64Script, AbortkForth64Script
 #include "wxzforth.h"         // for RunZForthScript, AbortZForthScript
 #include "wxoverlay.h"     // for curroverlay
 #include "wxscript.h"
@@ -63,6 +64,7 @@ static bool cxxforthscript = false;      // a CxxForth script is running?
 static bool gforthscript = false;      // a Gforth script is running?
 static bool ip1script = false;      // a IP1 script is running?
 static bool libforthscript = false;      // a LibForth script is running?
+static bool kforth64script = false;      // a kForth64 script is running?
 static bool zforthscript = false;      // a zForth script is running?
 static bool showtitle;              // need to update window title?
 static bool updateedit;             // need to update edit bar?
@@ -1489,9 +1491,11 @@ void CheckScriptError(const wxString& ext)
             errtype = _("LibForth error:");
         } else if (ext.IsSameAs(wxT("ip1"), false)) {
             errtype = _("IP1 error:");
+        } else if (ext.IsSameAs(wxT("kfs"), false)) {
+            errtype = _("kForth64 error:");
         } else if (ext.IsSameAs(wxT("zfs"), false)) {
             errtype = _("zForth error:");
-        } else {
+	} else {
             errtype = _("Python error:");
             scripterr.Replace(wxT("  File \"<string>\", line 1, in ?\n"), wxT(""));
         }
@@ -1564,6 +1568,7 @@ void RunScript(const wxString& filename)
     bool in_gforthscript = gforthscript;
     bool in_ip1script = ip1script;
     bool in_libforthscript = libforthscript;
+    bool in_kforth64script = kforth64script;
     bool in_zforthscript = zforthscript;
     wxString savecwd;
     
@@ -1664,6 +1669,9 @@ void RunScript(const wxString& filename)
     } else if (ext.IsSameAs(wxT("lfs"), false)) {
         libforthscript = true;
         RunLibForthScript(fpath);
+    } else if (ext.IsSameAs(wxT("kfs"), false)) {
+        kforth64script = true;
+        RunkForth64Script(fpath);
     } else if (ext.IsSameAs(wxT("zfs"), false)) {
         zforthscript = true;
         RunZForthScript(fpath);
@@ -1678,6 +1686,7 @@ void RunScript(const wxString& filename)
         gforthscript = false;
         ip1script = false;
         libforthscript = false;
+        kforth64script = false;
         zforthscript = false;
         Warning(_("Unexpected extension in script file:\n") + filename);
     }
@@ -1717,6 +1726,9 @@ void RunScript(const wxString& filename)
             } else if (in_libforthscript) {
                 // abort the calling LibForth script
                 AbortLibForthScript();
+            } else if (in_kforth64script) {
+                // abort the calling LibForth script
+                AbortkForth64Script();
             } else if (in_zforthscript) {
                 // abort the calling zForth script
                 AbortZForthScript();
@@ -1732,6 +1744,7 @@ void RunScript(const wxString& filename)
         gforthscript = in_gforthscript;
         ip1script = in_ip1script;
         libforthscript = in_libforthscript;
+        kforth64script = in_kforth64script;
         zforthscript = in_zforthscript;
         
     } else {
@@ -1787,6 +1800,7 @@ void RunScript(const wxString& filename)
         gforthscript = false;
         ip1script = false;
         libforthscript = false;
+        kforth64script = false;
         zforthscript = false;
         
         // update Undo/Redo items based on current layer's history
@@ -1959,6 +1973,7 @@ void PassKeyToScript(int key, int modifiers)
         if (gforthscript) AbortGforthScript();
         if (ip1script) AbortIP1Script();
         if (libforthscript) AbortLibForthScript();
+        if (kforth64script) AbortkForth64Script();
         if (zforthscript) AbortZForthScript();
     } else {
         // build a string like "key x altshift" and add to event queue
@@ -2066,6 +2081,7 @@ void FinishScripting()
         if (gforthscript) AbortGforthScript();
         if (ip1script) AbortIP1Script();
         if (libforthscript) AbortLibForthScript();
+        if (kforth64script) AbortkForth64Script();
         if (zforthscript) AbortZForthScript();
         wxSetWorkingDirectory(gollydir);
         inscript = false;
@@ -2080,5 +2096,6 @@ void FinishScripting()
     FinishGforthScripting();
     FinishIP1Scripting();
     FinishLibForthScripting();
+    FinishkForth64Scripting();
     FinishZForthScripting();
 }

@@ -1023,7 +1023,7 @@ void MainFrame::OpenScript()
         return;
     }
     
-    wxString filetypes = _("Lua or Python and *Forth (*.lua;*.py;*.fs;*.ip1;*.lfs;*.atl;*.efs;*.cxxfs;*.zfs)|*.lua;*.py;*.fs;*.ip1;*.lfs;*.atl;*.efs;*.cxxfs;*.zfs");
+    wxString filetypes = _("Lua or Python and *Forth (*.lua;*.py;*.fs;*.ip1;*.lfs;*.atl;*.efs;*.cxxfs;*.kfs;*.zfs)|*.lua;*.py;*.fs;*.ip1;*.lfs;*.atl;*.efs;*.cxxfs;*.kfs;*.zfs");
     filetypes +=         _("|Lua (*.lua)|*.lua");
     filetypes +=         _("|Python (*.py)|*.py");
     filetypes +=         _("|GForth (*.fs)|*.fs");
@@ -1032,6 +1032,7 @@ void MainFrame::OpenScript()
     filetypes +=         _("|Atlast (*.atl)|*.atl");
     filetypes +=         _("|Embed (*.efs)|*.efs");
     filetypes +=         _("|CxxForth (*.cxxfs)|*.cxxfs");
+    filetypes +=         _("|kForth64 (*.kfs)|*.kfs");
     filetypes +=         _("|ZForth (*.zfs)|*.zfs");
 #ifdef ENABLE_PERL
     filetypes +=         _("|Perl (*.pl)|*.pl");
