@@ -1,0 +1,144 @@
+\ : s" [char] " parse ; immediate
+2 constant size
+: chars> size * ;
+: string ( n c" xxx" -- )
+    create dup , chars allot
+    does>
+    dup @ swap 1+ chars> swap
+;
+
+: +field ( n <"name"> -- : exec addr -- addr )
+    create over , +
+    does> @ + ;
+
+: field:
+    aligned cell +field ;
+
+: begin-structure ( -- addr 0 )
+    create
+    here 0 0 ,
+    does> @ ;
+
+: end-structure ( addr n -- )
+    swap ! ;
+
+: begin-enumeration ( -- n ) 0 ;
+: enum ( n -- n ) dup constant 1+ ;
+: end-enumeration ( n -- ) drop ;
+
+variable freelist 0 ,
+: initialize ( start_addr length -- )
+    over dup freelist ! 0 swap ! swap cell+ ! ;
+
+: allocate ( u -- addr ior )
+    freelist @ 0= if drop 0 -59 exit then
+    dup 0= if drop 0 -59 exit then
+    cell+ freelist dup
+    begin
+    while dup @ cell+ @ 2 pick u<
+	if
+	    @ @ dup
+	else
+	    dup @ cell+ @ 2 pick - 2 cells max dup 2 cells =
+	    if
+		drop dup @ dup @ rot !
+	    else
+		2dup swap @ cell+ ! swap @ +
+	    then
+	    2dup ! cell+ 0
+	then
+    repeat
+    nip dup 0= ;
+
+: free ( ptr -- ior )
+    1 cells - dup @ swap 2dup cell+ ! freelist dup
+    begin
+	dup 3 pick u< and
+    while
+	@ dup @
+    repeat
+    dup @ dup 3 pick ! ?dup
+    if
+	dup 3 pick 5 pick + =
+	if 
+	    dup cell+ @ 4 pick + 3 pick cell+ ! @ pick !
+	else
+	    drop
+	then
+    then
+
+    dup cell+ @ over + 2 pick =
+    if
+	over cell+ @ over cell+ dup @ rot + swap ! swap @ swap !
+    else
+	!
+    then
+    drop 0 ;
+
+
+
+privet cr
+show
+2 3 + .
+2 3 getcell .
+.s
+2 3 1 .s setcell
+.s
+2 3 getcell .s
+2 3 0 setcell
+2 3 1 .s setcell
+.s
+update
+\ bye
+. . 
+2 step
+variable #str
+20 #str !
+#str @ .
+4 step
+create str #str allot
+\ str
+6 step
+variable #b
+s" test" dup #b ! str swap cmove
+8 step
+str #b @ type
+10 step
+32 string str-test
+s" str-test" dup #b ! str-test drop swap cmove
+str-test type
+12 step
+begin-enumeration
+enum a1
+enum a2 
+enum a3
+end-enumeration
+a1 a2 a3
+14 step drop drop drop
+.( test allocate)
+create pool 1000 allot
+pool 1000 initialize
+6000 1000 initialize
+141 step \ ok
+40 allocate throw
+142 step \ 5960
+80 allocate throw .s swap cr .s free throw cr .s 20 allocate throw .s
+16 step
+
+.( test structure )
+\ begin-structure point
+\    point +field point.x
+\    point +field point.y
+\ end-structure
+
+begin-structure point%
+    field: point>x
+    field: point>y
+end-structure
+
+18 step
+point% 
+0 point>x 
+20 step
+2 3 my+ .
+22 step
