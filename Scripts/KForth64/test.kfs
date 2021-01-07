@@ -1,0 +1,16 @@
+gprivet cr
+kf64privet cr
+show
+2 3 + .
+\ include ans-words.4th
+
+\ include ffl/config.fs
+
+\ 2 3 + 5 - 0= [IF]
+\ s" privet" type
+\ [ELSE]
+\ s" goodbye" type
+\ [THEN]
+
+
+\ bye
