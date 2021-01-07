@@ -92,6 +92,16 @@ int debug = 0;
 #define kforth64_debug(...)   do { } while(0)
 
 
+class AbortException: public runtime_error {
+public:
+explicit AbortException(const string& msg): runtime_error(msg) {}
+explicit AbortException(const char* msg): runtime_error(msg) {}
+explicit AbortException(const char* caddr, size_t count): runtime_error(string(caddr, count)) {}
+};
+void kf64_abort(){
+throw AbortException("");
+}
+
 extern "C" int CPP_gprivet(){
 cout << "Privet from Golly!" << endl;
 return 0;
@@ -114,16 +124,16 @@ extern "C" int kf64CheckEvents(){
 }
 
 extern "C" int kf64_rotate(){
-kf64CheckEvents();
-int direction = 1;
-if (viewptr->SelectionExists()){
-viewptr->RotateSelection(direction == 0);
-DoAutoUpdate();
-return 0;
-}else{
-return -1;
-//throw 
-}
+  kf64CheckEvents();
+  int direction = 1;
+  if (viewptr->SelectionExists()){
+    viewptr->RotateSelection(direction == 0);
+    DoAutoUpdate();
+    return 0;
+  }else{
+    //return -1;
+    throw AbortException("not selected");
+  }
 }
 
 //extern "C" int gop_show(){
