@@ -13,3 +13,6 @@
 [submodule "Atlast"]
 	path = Atlast
 	url = https://github.com/serge-balakshiy/Atlast.git
+[submodule "kForth-64"]
+	path = kForth-64
+	url = https://github.com/serge-balakshiy/kForth-64.git
