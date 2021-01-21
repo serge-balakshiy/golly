@@ -1,0 +1,10 @@
+variable vcurstr
+.s
+variable #curstr
+.s
+128 #curstr !
+.s
+create curstr #curstr @ allot
+.s
+curstr count type
+.s

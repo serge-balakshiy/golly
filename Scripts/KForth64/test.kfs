@@ -1,7 +1,60 @@
+: step ( n -- )
+    . ." )step" .s \ cr
+;
 gprivet cr
 kf64privet cr
 show
-2 3 + .
+2 3 + . cr
+2 4 getcell
+1 step
+drop
+2 4 1 setcell
+3 step
+create test-str 128 allot
+test-str
+5 step
+getcursor 
+7 step
+count
+9 step
+type cr
+11 step
+create str-event 128 allot
+str-event
+127
+13 step
+getevent
+15 step
+type
+17 step
+variable count-event
+5 count-event !
+create strxy 48 allot
+
+: test-event ( -- )
+    begin
+	\ 98 step
+	\ ?dup
+	count-event @
+    while
+	\ ." repeat" cr
+	str-event
+	127 \ 100 step
+	getevent dup if 
+	    type
+	    count-event @ 1-
+	    count-event ! count-event @ . cr 102 step
+	    \ 40 strxy getxy type 106 step
+	else
+	    \ type \ 102 step
+	    drop drop
+	    1-
+	    \ 104 step
+	then
+    repeat
+;
+test-event
+
 \ include ans-words.4th
 
 \ include ffl/config.fs

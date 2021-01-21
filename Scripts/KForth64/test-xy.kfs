@@ -1,0 +1,17 @@
+: step ( n -- )
+    . ." )step" .s \ cr
+;
+gprivet cr
+kf64privet cr
+s" Привет!" show
+
+include utils.4th
+
+create strxy 128 allot
+strxy 128
+getxy type cr
+12 step
+
+
+
+

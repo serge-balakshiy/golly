@@ -1,0 +1,41 @@
+: step ( n -- )
+    . ." )step" .s \ cr
+;
+
+: value constant ;
+: value! >body ! ;
+: to state @ if
+    postpone ['] postpone value! 
+    else
+	' value!
+    then
+; immediate
+2 step
+12 value strv
+4 step
+15 to strv
+6 step
+strv .
+
+\ include ~/projects/gh/kForth-64/forth-src/strings.4th
+include strings.4th
+include utils.4th
+\ include fsl-util.fs
+
+4 step
+\ variable #strxy
+\ 128 #strxy !
+6 step
+\ #strxy @ .
+8 step
+\ create strxy #strxy @ allot
+10 step
+\ strxy #strxy @
+12 step 
+\ getxy type cr
+14 step
+
+
+
+
+
