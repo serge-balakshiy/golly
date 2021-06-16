@@ -143,7 +143,6 @@ extern "C" int CPP_gllshow(){
   auto caddr = (char*)*(GlobalSp + 1); //TOP  
   DROP
     bool get = true;
-
   inscript = false;
 //  statusptr->DisplayMessage( wxString( "Privet from kForth64!", KF64FORTH_ENC));
   statusptr->DisplayMessage( wxString( caddr, KF64FORTH_ENC));
@@ -170,10 +169,10 @@ extern "C" int CPP_G_kf64rotate(){
   //return 0;
 }
 
-extern "C" void CPP_G_kf64update(){
+extern "C" int CPP_G_kf64update(){
   kf64CheckEvents();
   GSF_update();
-
+  return 0;
 
 }
 
@@ -229,9 +228,9 @@ extern "C" int CPP_G_kf64getcursor(){
 
 extern "C" int CPP_G_kf64getevent(){ //( c-addr u1 -- c-addr u2 )
   kf64CheckEvents();
-if (GlobalSp > BottomOfStack){
-return E_V_STK_UNDERFLOW;
-}
+    if (GlobalSp > BottomOfStack){
+	return E_V_STK_UNDERFLOW;
+    }
 auto length = *((int*)(POP));
 auto caddr = (char*)*(GlobalSp + 1); //TOP  
 bool get = true;

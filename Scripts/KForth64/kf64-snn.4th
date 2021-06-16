@@ -34,29 +34,30 @@ struct
     cell% field snn>next
 end-struct snn%
 
-32 step
+\ 32 step
 : snn-init ( snn -- = Initialise the node )
     snn>next nil!
 ;
-34 step
+\ 34 step
 : snn-new ( -- snn = Create a new node on the heap )
     snn% %alloc dup snn-init dup to snn-ptr
 ;
-36 step
+\ 36 step
 : snn-free ( snn -- = Free then node from the heap )
-    free
+    free throw
 ;
-38 step
+\ 38 step
 : snn-next@ ( snn1 -- snn2 = Get for the node snn1 the next node to snn2 )
     snn>next @ to snn-ptr
     snn-ptr
 ;
-40 step
+\ 40 step
 : snn-next!    ( snn1 snn2 -- = Set for the node snn1 the next node to snn2 )
     snn>next to snn-ptr
     snn-ptr !
 ;
-42 step
+
+\ 42 step
 ( Inspection )
 
 : snn-dump     ( snn -- = Dump the single list node )
@@ -65,12 +66,22 @@ end-struct snn%
 ;
 
 \ ==============================================================================
-100 step
+\ 100 step
 
 0 [IF]
+\ include strings.4th
+\ include utils.4th
+\ include struct.4th
+\ include struct-ext.4th
+\ include kf64-tlb.4th
+\ include kf64-tst.4th
+    
     snn-new ptr snn-p1
     .( snn dump ) cr
     snn-p1 snn-dump cr
+
+    
+
 [THEN]
 
-102 step
+\ 102 step

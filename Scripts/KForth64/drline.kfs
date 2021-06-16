@@ -18,9 +18,13 @@
 strv .
 
 \ include ~/projects/gh/kForth-64/forth-src/strings.4th
+include ans-words.4th
 include strings.4th
 include utils.4th
-\ include fsl-util.fs
+
+: , ( u | a -- ) here ! here cell+ to here ;
+
+include fsl-util.fs
 
 4 step
 \ variable #strxy

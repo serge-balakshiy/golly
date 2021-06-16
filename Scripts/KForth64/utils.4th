@@ -24,19 +24,19 @@
 \ 	strings.4th
 \
 
-\ : shell ( a u -- n | execute a shell command) 
-\    strpck system ;
+ : shell ( a u -- n | execute a shell command) 
+    strpck system ;
 
-\ : tdstring ( -- a u | return a date and time string )
-\    time&date
-\    s"  "
-\    rot 0 <# [char] - hold # # # # #> strcat
-\    rot 0 <# [char] - hold # # #>     strcat
-\    rot 0 <# bl hold # # #>           strcat
-\    rot 0 <# [char] : hold # # #>     strcat
-\    rot 0 <# [char] : hold # # #>     strcat
-\    rot 0 <# # # #>                   strcat
-\ ;
+: tdstring ( -- a u | return a date and time string )
+    time&date
+    s"  "
+    rot 0 <# [char] - hold # # # # #> strcat
+    rot 0 <# [char] - hold # # #>     strcat
+    rot 0 <# bl hold # # #>           strcat
+    rot 0 <# [char] : hold # # #>     strcat
+    rot 0 <# [char] : hold # # #>     strcat
+    rot 0 <# # # #>                   strcat
+;
 
 \ PTR is similar to VALUE except it returns a number with an address
 \ type. The word TO may be used to change the value of a named ptr.
@@ -66,11 +66,11 @@
 : pack ( a u a2 -- | copy string to counted string at a2)
     2dup c! char+ swap cmove ;	
 
-\ : place  ( addr len c-addr -- | copy string to counted string at a2)
-\     2DUP 2>R
-\     CHAR+ SWAP CHARS MOVE
-\     2R> C!
-\ ; 
+: place  ( addr len c-addr -- | copy string to counted string at a2)
+     2DUP 2>R
+     CHAR+ SWAP CHARS MOVE
+     2R> C!
+; 
 
 : $constant  ( a u <name> -- | create a string constant )
     create dup >r cell+ allot? dup r@ swap ! cell+ r> cmove  
@@ -87,15 +87,15 @@
 
   e.g.  "0 enum orange apple banana"
 )
-\ : enum ( u <namelist> -- )
-\    BEGIN
-\	bl word count dup
-\    WHILE
-\            2>r dup s" constant " 
-\	    2r> strcat evaluate
-\	    1+
-\    REPEAT
-\    2drop drop ;
+: enum ( u <namelist> -- )
+    BEGIN
+	bl word count dup
+    WHILE
+            2>r dup s" constant " 
+	    2r> strcat evaluate
+	    1+
+    REPEAT
+    2drop drop ;
 
 \ Split a string containing path+filename into a path name and
 \ file name.
